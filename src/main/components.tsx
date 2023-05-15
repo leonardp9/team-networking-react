@@ -1,5 +1,5 @@
 import { SideMenu } from "../menu/SideMenu";
-import { TeamsTable } from "../teams/TeamsTable";
+import { TeamsTableWrapper } from "../teams/TeamsTable";
 export function ContentWrapper() {
   return (
     <section id="content">
@@ -15,7 +15,7 @@ export function ContentWrapper() {
         </div>
         <div className="page" id="teams" style={{ display: "block" }}>
           <h2>Teams</h2>
-          <TeamsTable />
+          <TeamsTableWrapper />
         </div>
         <div className="page" id="languages">
           <h2>Known Languages</h2>
