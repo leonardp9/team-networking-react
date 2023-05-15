@@ -1,5 +1,6 @@
 import { type } from "os";
 import "./style.css";
+import React from "react";
 type Team = {
   id: string;
   name: string;
@@ -89,32 +90,52 @@ export function TeamsTable(props: Props) {
   );
 }
 
-export function TeamsTableWrapper() {
-  const teams = [
-    {
-      id: "toze8j1610313009673",
-      promotion: "html",
-      members: "Nicolae Matei, HTML",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/web-intro-presentation"
-    },
-    {
-      id: "ezabnf1630345987541",
-      promotion: "cssdddd",
-      members: "Nicolae",
-      name: "Names",
-      url: "https://github.com/nmatei/nmatei.github.io"
-    }
-  ];
+type WrapperProps = {};
+type State = {
+  loading: boolean;
+  teams: Team[];
+};
 
-  // return TeamsTable({
-  //   teams: teams
-  // });
-  return (
-    <>
-      <TeamsTable teams={teams} loading={true} />
-      <hr />
-      <TeamsTable teams={teams} loading={false} />
-    </>
-  );
+export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
+  constructor(props) {
+    super(props);
+    console.warn("wrapper props", props);
+    this.state = {
+      loading: true,
+      teams: []
+    };
+  }
+
+  componentDidMount(): void {
+    setTimeout(() => {
+      console.info("change loading");
+      // this.state.loading = false; // not  working as in readonly
+      this.setState({
+        loading: false,
+        teams: [
+          {
+            id: "toze8j1610313009673",
+            promotion: "html",
+            members: "Nicolae Matei, HTML",
+            name: "Web Presentation",
+            url: "https://github.com/nmatei/web-intro-presentation"
+          },
+          {
+            id: "ezabnf1630345987541",
+            promotion: "cssdddd",
+            members: "Nicolae",
+            name: "Names",
+            url: "https://github.com/nmatei/nmatei.github.io"
+          }
+        ]
+      });
+    }, 5000);
+  }
+
+  render() {
+    // return TeamsTable({
+    //   teams: teams
+    // });
+    return <TeamsTable teams={this.state.teams} loading={this.state.loading} />;
+  }
 }
