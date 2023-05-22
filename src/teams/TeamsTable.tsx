@@ -1,14 +1,7 @@
 import React from "react";
 import "./style.css";
 import { createTeamRequest, deleteTeamRequest, getTeamsRequest, updateTeamRequest } from "./middleware";
-
-type Team = {
-  id: string;
-  name: string;
-  promotion: string;
-  url: string;
-  members: string;
-};
+import { Team } from "./models";
 
 type Props = {
   loading: boolean;
@@ -36,7 +29,6 @@ export function TeamsTable(props: Props & Actions) {
         props.save();
       }}
       onReset={() => {
-        console.warn("reset fara props");
         props.reset();
       }}
     >
@@ -211,7 +203,7 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
     console.info("change loading", teams);
     this.setState({
       loading: false,
-      teams: teams
+      teams: teams || []
     });
   }
 
@@ -223,12 +215,21 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
         loading={this.state.loading}
         team={this.state.team}
         deleteTeam={async id => {
-          console.warn("TODO pls remove this team", id);
-          const status = await deleteTeamRequest(id);
-          console.warn("status", status);
-          this.loadTeams();
+          this.setState({
+            loading: true
+          });
+          const { success } = await deleteTeamRequest(id);
+          console.warn("deleted", success);
+          // this.loadTeams();
+          this.setState(state => ({
+            loading: false,
+            teams: this.state.teams.filter(team => team.id !== id)
+          }));
         }}
         save={async () => {
+          this.setState({
+            loading: true
+          });
           const team = this.state.team;
           let status;
           if (team.id) {
@@ -236,19 +237,18 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
           } else {
             status = await createTeamRequest(team);
           }
+          console.warn("save", status);
           await this.loadTeams();
           this.setState({
             team: getEmptyTeam()
           });
         }}
         startEdit={team => {
-          console.warn("start edit", team);
           this.setState({
             team
           });
         }}
         reset={() => {
-          console.warn("reset");
           this.setState({
             team: getEmptyTeam()
           });

@@ -1,15 +1,21 @@
-export function getTeamsRequest() {
+import { Team } from "./models";
+
+export function getTeamsRequest(): Promise<Team[]> {
   return fetch("http://localhost:3000/teams-json", {
     method: "GET",
     headers: {
       "Content-Type": "application/json"
     }
-  }).then(r => {
-    return r.json();
-  });
+  })
+    .then(r => {
+      return r.json();
+    })
+    .catch(err => {
+      console.warn("failed to fetch", err);
+    });
 }
 
-export function createTeamRequest(team) {
+export function createTeamRequest(team: Team) {
   return fetch("http://localhost:3000/teams-json/create", {
     method: "POST",
     headers: {
@@ -19,7 +25,10 @@ export function createTeamRequest(team) {
   }).then(r => r.json());
 }
 
-export function deleteTeamRequest(id, successDelete?) {
+export function deleteTeamRequest(
+  id: string,
+  successDelete?: (status: { success: boolean }) => void
+): Promise<{ success: boolean }> {
   return fetch("http://localhost:3000/teams-json/delete", {
     method: "DELETE",
     headers: {
@@ -38,7 +47,7 @@ export function deleteTeamRequest(id, successDelete?) {
     });
 }
 
-export function updateTeamRequest(team) {
+export function updateTeamRequest(team: Team) {
   return fetch("http://localhost:3000/teams-json/update", {
     method: "PUT",
     headers: {
